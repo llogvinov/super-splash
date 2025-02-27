@@ -7,7 +7,7 @@ namespace UI
     {
         [SerializeField] private Text _levelNumber;
 
-        public void SetLevelNumber(int levelNumber)
+        public void SetLevelNumber(uint levelNumber)
         {
             _levelNumber.text = $"Level {levelNumber}";
         }

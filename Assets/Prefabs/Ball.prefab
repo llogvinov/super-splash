@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 2209036734379698661}
   - component: {fileID: 7543683757548957076}
   - component: {fileID: 1511369174752876474}
-  - component: {fileID: 1301826689263810844}
+  - component: {fileID: 2729325437775046903}
   - component: {fileID: 3022623785522577922}
-  - component: {fileID: 8668859839772539292}
+  - component: {fileID: 3777843857428830739}
+  - component: {fileID: 6674469467744157545}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -86,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1301826689263810844
+--- !u!114 &2729325437775046903
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,15 +96,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8549176989368510610}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2969c8a5b9e7f2247a5f010a52ca5b7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 59ab0760c390f0b44a59fb387a106c3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swipeListener: {fileID: 3022623785522577922}
-  levelManager: {fileID: 0}
-  stepDuration: 0.1
-  wallsAndRoadsLayer:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &3022623785522577922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +120,7 @@ MonoBehaviour:
   _sensetivity: 10
   _continuousDetection: 0
   _swipeDetectionMode: 2
---- !u!114 &8668859839772539292
+--- !u!114 &3777843857428830739
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,10 +129,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 8549176989368510610}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b45360a64f57b6438c7ffe5d0ab4df3, type: 3}
+  m_Script: {fileID: 11500000, guid: 5837da57ea63c5a448dfd1b8f4a487bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swipeListener: {fileID: 3022623785522577922}
+  playerInput: {fileID: 2729325437775046903}
+  levelManager: {fileID: 0}
+  stepDuration: 0.05
+  wallsAndRoadsLayer:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &6674469467744157545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8549176989368510610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6c08063b6ee6b46b3b8acedeb72fe9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   levelManager: {fileID: 0}
-  ballMovement: {fileID: 1301826689263810844}
+  ballMovement: {fileID: 3777843857428830739}
   ballMeshRenderer: {fileID: 1511369174752876474}
-  paintedRoadTiles: 0

@@ -1,4 +1,3 @@
-using System;
 using Core.Services;
 using Core.Services.PlayerData;
 using UI;
@@ -10,8 +9,9 @@ namespace Core.StateMachine
     {
         private readonly GameStateMachine _stateMachine;
         private readonly AllServices _services;
+        private IPlayerDataService _playerDataService;
         private PlayerData _playerData;
-        private LevelCompletedUI _levelCompletedUI;
+        private LevelSelectUI _levelSelectUI;
 
         public GameLoopState(GameStateMachine stateMachine,
             AllServices services)
@@ -22,25 +22,34 @@ namespace Core.StateMachine
 
         public void Enter()
         {
-            _playerData = _services.Single<IPlayerDataService>().Load();
+            _playerDataService = _services.Single<IPlayerDataService>();
+            _playerData = _playerDataService.Load();
 
             Game.LevelCompleted += OnLevelCompleted;
+            LevelButtonUI.LoadLevelEvent += LoadLevel;
         }
 
         private void OnLevelCompleted()
         {
-            _levelCompletedUI = GameObject.FindObjectOfType<LevelCompletedUI>();
-            if (_levelCompletedUI != null)
+            _levelSelectUI = GameObject.FindObjectOfType<LevelSelectUI>();
+            if (_levelSelectUI != null)
             {
-                _levelCompletedUI.Show();
-                _levelCompletedUI.NextLevelButtonClicked += OnNextLevelButtonClicked;
+                _levelSelectUI.ShowUI();
+                _levelSelectUI.NextLevelButtonClicked += OnNextLevelButtonClicked;
             }
+        }
+
+        private void LoadLevel(uint levelNumber)
+        {
+            _playerData.CurrentLevelNumber = levelNumber;
+            _services.Single<IPlayerDataService>().Save(_playerData);
+            _stateMachine.Enter<PrepareGameState>();
         }
 
         private void OnNextLevelButtonClicked()
         {
-            _levelCompletedUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
-            _levelCompletedUI.Hide();
+            _levelSelectUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
+            _levelSelectUI.HideUI();
             _playerData.CurrentLevelNumber++;
             _services.Single<IPlayerDataService>().Save(_playerData);
             _stateMachine.Enter<PrepareGameState>();

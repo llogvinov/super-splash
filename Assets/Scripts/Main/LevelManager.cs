@@ -26,7 +26,7 @@ public class LevelManager : MonoBehaviour
    private float unitPerPixel;
    private Texture2D levelTexture;
 
-   public void Initialize(int levelNumber)
+   public void Initialize(uint levelNumber)
    {
       var levelData = levelsData.LevelDataList.FirstOrDefault(d => d.LevelNumber == levelNumber);
       CurrentLevelData = levelData;

@@ -9,7 +9,7 @@ namespace Core.Services.PlayerData
             var playerData = new PlayerData();
             if (PlayerPrefs.HasKey("CurrentLevelNumber"))
             {
-                playerData.CurrentLevelNumber = PlayerPrefs.GetInt("CurrentLevelNumber");
+                playerData.CurrentLevelNumber = (uint)PlayerPrefs.GetInt("CurrentLevelNumber");
             }
             else
             {
@@ -20,7 +20,7 @@ namespace Core.Services.PlayerData
 
         public void Save(PlayerData playerData)
         {
-            PlayerPrefs.SetInt("CurrentLevelNumber", playerData.CurrentLevelNumber);
+            PlayerPrefs.SetInt("CurrentLevelNumber", (int)playerData.CurrentLevelNumber);
         }
     }
 }
