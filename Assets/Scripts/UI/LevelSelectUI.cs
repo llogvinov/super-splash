@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Core.Services;
 using Core.Services.PlayerData;
 using UnityEngine;
@@ -10,15 +12,16 @@ namespace UI
     public class LevelSelectUI : MonoBehaviour
     {
         public Action NextLevelButtonClicked;
-        
+
         [SerializeField] private Canvas _canvas;
         [SerializeField] private LevelsData _levelsData;
         [SerializeField] private Transform _container;
         [SerializeField] private LevelButtonUI _levelButtonUI;
         [SerializeField] private Button _nextLevelButton;
-        
+
         private PlayerData _playerData;
         private List<LevelButtonUI> _levelButtonUIList;
+        private LevelButtonUI _currentSelectedButton;
 
         private void Awake()
         {
@@ -30,6 +33,7 @@ namespace UI
         {
             CleanUp();
             Initialize();
+            LevelButtonUI.LevelButtonClicked += OnLevelButtonClicked;
             LevelButtonUI.LoadLevelEvent += HideUI;
             _nextLevelButton.onClick.AddListener(OnNextLevelButtonClicked);
         }
@@ -50,8 +54,14 @@ namespace UI
             _canvas.gameObject.SetActive(false);
         }
 
-        private void OnNextLevelButtonClicked() => 
+        private async void OnNextLevelButtonClicked()
+        {
+            var nextLevelNumber = _currentSelectedButton.LevelNumber + 1;
+            var nextLevelButton = _levelButtonUIList.FirstOrDefault(l => nextLevelNumber == l.LevelNumber);
+            SelectLevelButton(nextLevelButton);
+            await Task.Delay(500);
             NextLevelButtonClicked?.Invoke();
+        }
 
         private void HideUI(uint levelNumber)
         {
@@ -74,17 +84,38 @@ namespace UI
                 var levelButton = Instantiate(_levelButtonUI, _container);
                 var isLevelOpened = _playerData.OpenedLevels.Contains(levelData.LevelNumber);
                 levelButton.Initialize(levelData, isLevelOpened);
+                if (levelButton.LevelNumber == _playerData.CurrentLevelNumber)
+                {
+                    _currentSelectedButton = levelButton;
+                    _currentSelectedButton.ToggleOutline(true);
+                }
+                else
+                {
+                    levelButton.ToggleOutline(false);
+                }
                 _levelButtonUIList.Add(levelButton);
             }
         }
 
         public void UpdateUI(PlayerData playerData)
         {
-            foreach(var levelButton in _levelButtonUIList)
+            foreach (var levelButton in _levelButtonUIList)
             {
                 var isLevelOpened = playerData.OpenedLevels.Contains(levelButton.LevelNumber);
                 levelButton.UpdateLock(isLevelOpened);
             }
+        }
+
+        private void OnLevelButtonClicked(LevelButtonUI levelButton)
+        {
+            SelectLevelButton(levelButton);
+        }
+
+        private void SelectLevelButton(LevelButtonUI levelButton)
+        {
+            _currentSelectedButton.ToggleOutline(false);
+            _currentSelectedButton = levelButton;
+            _currentSelectedButton.ToggleOutline(true);
         }
     }
 }

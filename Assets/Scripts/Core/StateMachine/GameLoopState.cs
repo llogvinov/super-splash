@@ -32,7 +32,10 @@ namespace Core.StateMachine
         private void OnLevelCompleted()
         {
             var nextLevel = _playerData.CurrentLevelNumber + 1;
-            _playerData.OpenedLevels.Add(nextLevel);
+            if (!_playerData.OpenedLevels.Contains(nextLevel))
+            {
+                _playerData.OpenedLevels.Add(nextLevel);
+            }
             _playerDataService.Save(_playerData);
             Debug.Log(string.Join(", ", _playerDataService.Load().OpenedLevels));
 

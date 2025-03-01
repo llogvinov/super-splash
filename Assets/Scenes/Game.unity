@@ -631,7 +631,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _plane: {fileID: 550312013}
   _map: {fileID: 951864811}
-  _levelsData: {fileID: 11400000, guid: 706e8cfa9a1c91f45ab473a9a419f990, type: 2}
   _prefabWallTile: {fileID: 4638526012646592417, guid: b8781b30888f7d545a5c7d18ff4c8fdd, type: 3}
   _prefabRoadTile: {fileID: 1170526689672148674, guid: 97d31dd7215d88b4e94e79811f391283, type: 3}
 --- !u!1 &684496341
@@ -1199,7 +1198,7 @@ MonoBehaviour:
   _canvas: {fileID: 1024510418}
   _levelsData: {fileID: 11400000, guid: 706e8cfa9a1c91f45ab473a9a419f990, type: 2}
   _container: {fileID: 684496342}
-  _levelButtonUI: {fileID: 1865148446290985259, guid: d0b893252555a3147bb3731e6b1e4685, type: 3}
+  _levelButtonUI: {fileID: 883367525550280444, guid: d0b893252555a3147bb3731e6b1e4685, type: 3}
   _nextLevelButton: {fileID: 1111284338}
 --- !u!1 &1656203217
 GameObject:
