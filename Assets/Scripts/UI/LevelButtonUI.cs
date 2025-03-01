@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,15 +10,20 @@ namespace UI
 
         [SerializeField] private Text _levelNumberText;
         [SerializeField] private Button _button;
+        [SerializeField] private GameObject _lock;
 
-        private uint _levelNumber;
-        
-        public void Initialize(LevelData levelData)
+        public uint LevelNumber { get; private set; }
+
+        public void Initialize(LevelData levelData, bool isLevelOpened)
         {
-            _levelNumber = levelData.LevelNumber;
-            _levelNumberText.text = _levelNumber.ToString();
+            LevelNumber = levelData.LevelNumber;
+            _levelNumberText.text = LevelNumber.ToString();
+            UpdateLock(isLevelOpened);
             _button.onClick.AddListener(OnButtonClicked);
         }
+
+        public void UpdateLock(bool isLevelOpened) =>
+            _lock.SetActive(!isLevelOpened);
 
         private void OnButtonClicked()
         {
@@ -29,7 +33,7 @@ namespace UI
 
         private void LoadLevel()
         {
-            LoadLevelEvent?.Invoke(_levelNumber);
+            LoadLevelEvent?.Invoke(LevelNumber);
         }
     }
 }
