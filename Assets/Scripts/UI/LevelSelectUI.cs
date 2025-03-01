@@ -63,6 +63,9 @@ namespace UI
             NextLevelButtonClicked?.Invoke();
         }
 
+        public void ToggleNextButton(bool enable) =>
+            _nextLevelButton.gameObject.SetActive(enable);
+
         private void HideUI(uint levelNumber)
         {
             HideUI();
@@ -95,6 +98,7 @@ namespace UI
                 }
                 _levelButtonUIList.Add(levelButton);
             }
+            ToggleNextButton(true);
         }
 
         public void UpdateUI(PlayerData playerData)
@@ -104,6 +108,7 @@ namespace UI
                 var isLevelOpened = playerData.OpenedLevels.Contains(levelButton.LevelNumber);
                 levelButton.UpdateLock(isLevelOpened);
             }
+            ToggleNextButton(true);
         }
 
         private void OnLevelButtonClicked(LevelButtonUI levelButton)

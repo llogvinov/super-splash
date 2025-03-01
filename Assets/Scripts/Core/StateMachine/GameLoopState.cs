@@ -9,15 +9,19 @@ namespace Core.StateMachine
     {
         private readonly GameStateMachine _stateMachine;
         private readonly AllServices _services;
+        private readonly LevelsData _levelsData;
         private IPlayerDataService _playerDataService;
         private PlayerData _playerData;
         private LevelSelectUI _levelSelectUI;
+
+        private LevelSelectUI LevelSelectUI => _levelSelectUI ??= GameObject.FindObjectOfType<LevelSelectUI>();
 
         public GameLoopState(GameStateMachine stateMachine,
             AllServices services)
         {
             _stateMachine = stateMachine;
             _services = services;
+            _levelsData = Resources.Load<LevelsData>("LevelsData");
         }
 
         public void Enter()
@@ -31,20 +35,25 @@ namespace Core.StateMachine
 
         private void OnLevelCompleted()
         {
+            if (_playerData.CurrentLevelNumber == _levelsData.MaxLevel)
+            {
+                LevelSelectUI.ToggleNextButton(false);
+                LevelSelectUI.ShowUI();
+                return;
+            }
+
             var nextLevel = _playerData.CurrentLevelNumber + 1;
             if (!_playerData.OpenedLevels.Contains(nextLevel))
             {
                 _playerData.OpenedLevels.Add(nextLevel);
             }
             _playerDataService.Save(_playerData);
-            Debug.Log(string.Join(", ", _playerDataService.Load().OpenedLevels));
 
-            _levelSelectUI = GameObject.FindObjectOfType<LevelSelectUI>();
-            if (_levelSelectUI != null)
+            if (LevelSelectUI != null)
             {
-                _levelSelectUI.UpdateUI(_playerData);
-                _levelSelectUI.ShowUI();
-                _levelSelectUI.NextLevelButtonClicked += OnNextLevelButtonClicked;
+                LevelSelectUI.UpdateUI(_playerData);
+                LevelSelectUI.ShowUI();
+                LevelSelectUI.NextLevelButtonClicked += OnNextLevelButtonClicked;
             }
         }
 
@@ -57,8 +66,8 @@ namespace Core.StateMachine
 
         private void OnNextLevelButtonClicked()
         {
-            _levelSelectUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
-            _levelSelectUI.HideUI();
+            LevelSelectUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
+            LevelSelectUI.HideUI();
 
             _playerData.CurrentLevelNumber += 1;
             _playerDataService.Save(_playerData);
@@ -69,7 +78,7 @@ namespace Core.StateMachine
         {
             Game.LevelCompleted -= OnLevelCompleted;
             LevelButtonUI.LoadLevelEvent -= LoadLevel;
-            _levelSelectUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
+            LevelSelectUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
         }
     }
 }

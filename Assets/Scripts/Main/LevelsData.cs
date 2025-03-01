@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,4 +5,5 @@ using UnityEngine;
 public class LevelsData : ScriptableObject
 {
     public List<LevelData> LevelDataList;
+    public uint MaxLevel => (uint)LevelDataList.Count;
 }
