@@ -1,3 +1,4 @@
+using System.Linq;
 using Core.Services;
 using Core.Services.PlayerData;
 using UI;
@@ -9,6 +10,7 @@ namespace Core.StateMachine
     {
         private readonly GameStateMachine _stateMachine;
         private readonly AllServices _services;
+        private readonly LevelsData _levelsData;
         private PlayerData _playerData;
 
         public PrepareGameState(GameStateMachine stateMachine,
@@ -16,6 +18,7 @@ namespace Core.StateMachine
         {
             _stateMachine = stateMachine;
             _services = services;
+            _levelsData = Resources.Load<LevelsData>("LevelsData");
         }
 
         public void Enter()
@@ -32,7 +35,8 @@ namespace Core.StateMachine
             var levelManager = GameObject.FindObjectOfType<LevelManager>();
             if (levelManager != null)
             {
-                levelManager.Initialize(_playerData.CurrentLevelNumber);
+                var levelData = GetDataByLevelNumberNumber(_playerData.CurrentLevelNumber);
+                levelManager.Initialize(levelData);
             }
 
             _stateMachine.Enter<GameLoopState>();
@@ -42,5 +46,8 @@ namespace Core.StateMachine
         {
 
         }
+
+        private LevelData GetDataByLevelNumberNumber(uint levelNumber) =>
+            _levelsData.LevelDataList.FirstOrDefault(l => l.LevelNumber == levelNumber);
     }
 }

@@ -629,11 +629,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d727b32bc5dfdd243a7a18c370a816c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plane: {fileID: 550312013}
-  map: {fileID: 951864811}
-  levelsData: {fileID: 11400000, guid: 706e8cfa9a1c91f45ab473a9a419f990, type: 2}
-  prefabWallTile: {fileID: 4638526012646592417, guid: b8781b30888f7d545a5c7d18ff4c8fdd, type: 3}
-  prefabRoadTile: {fileID: 1170526689672148674, guid: 97d31dd7215d88b4e94e79811f391283, type: 3}
+  _plane: {fileID: 550312013}
+  _map: {fileID: 951864811}
+  _levelsData: {fileID: 11400000, guid: 706e8cfa9a1c91f45ab473a9a419f990, type: 2}
+  _prefabWallTile: {fileID: 4638526012646592417, guid: b8781b30888f7d545a5c7d18ff4c8fdd, type: 3}
+  _prefabRoadTile: {fileID: 1170526689672148674, guid: 97d31dd7215d88b4e94e79811f391283, type: 3}
 --- !u!1 &684496341
 GameObject:
   m_ObjectHideFlags: 0
