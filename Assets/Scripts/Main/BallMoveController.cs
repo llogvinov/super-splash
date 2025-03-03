@@ -23,6 +23,8 @@ namespace Main
         private Vector3 moveDirection;
         private bool canMove = true;
 
+        public static bool IsInputAllowed = true;
+
         private void Start()
         {
             LevelManager.Initialized += OnInitialized;
@@ -68,47 +70,47 @@ namespace Main
 
         private void MoveBall()
         {
-            if (canMove)
+            if (!IsInputAllowed) return;
+            if (!canMove) return;
+
+            canMove = false;
+            RaycastHit[] hits = Physics.RaycastAll(transform.position, moveDirection, MAX_RAY_DISTANCE, wallsAndRoadsLayer.value)
+               .OrderBy(hit => hit.distance).ToArray();
+
+            Vector3 targetPosition = transform.position;
+
+            int steps = 0;
+
+            List<RoadTile> pathRoadTiles = new List<RoadTile>();
+
+            for (int i = 0; i < hits.Length; i++)
             {
-                canMove = false;
-                RaycastHit[] hits = Physics.RaycastAll(transform.position, moveDirection, MAX_RAY_DISTANCE, wallsAndRoadsLayer.value)
-                   .OrderBy(hit => hit.distance).ToArray();
-
-                Vector3 targetPosition = transform.position;
-
-                int steps = 0;
-
-                List<RoadTile> pathRoadTiles = new List<RoadTile>();
-
-                for (int i = 0; i < hits.Length; i++)
+                if (hits[i].collider.isTrigger)
                 {
-                    if (hits[i].collider.isTrigger)
-                    {
-                        pathRoadTiles.Add(hits[i].transform.GetComponent<RoadTile>());
-                    }
-                    else
-                    {
-                        if (i == 0)
-                        {
-                            canMove = true;
-                            return;
-                        }
-                        steps = i;
-                        var finalPosition = hits[i - 1].transform.position;
-                        targetPosition = new Vector3(finalPosition.x, targetPosition.y, finalPosition.z);
-                        break;
-                    }
+                    pathRoadTiles.Add(hits[i].transform.GetComponent<RoadTile>());
                 }
-
-                float moveDuration = stepDuration * steps;
-                transform
-                    .DOMove(targetPosition, moveDuration)
-                    .SetEase(Ease.Linear)
-                    .OnComplete(() => canMove = true);
-
-                if (onMoveStart != null)
-                    onMoveStart.Invoke(pathRoadTiles, moveDuration);
+                else
+                {
+                    if (i == 0)
+                    {
+                        canMove = true;
+                        return;
+                    }
+                    steps = i;
+                    var finalPosition = hits[i - 1].transform.position;
+                    targetPosition = new Vector3(finalPosition.x, targetPosition.y, finalPosition.z);
+                    break;
+                }
             }
+
+            float moveDuration = stepDuration * steps;
+            transform
+                .DOMove(targetPosition, moveDuration)
+                .SetEase(Ease.Linear)
+                .OnComplete(() => canMove = true);
+
+            if (onMoveStart != null)
+                onMoveStart.Invoke(pathRoadTiles, moveDuration);
         }
     }
 }

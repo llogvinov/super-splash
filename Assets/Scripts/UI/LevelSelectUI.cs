@@ -1,23 +1,22 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Core.Services;
 using Core.Services.PlayerData;
+using Main;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI
 {
-    public class LevelSelectUI : MonoBehaviour
+    public class LevelSelectUI : BaseUI
     {
-        public Action NextLevelButtonClicked;
-
-        [SerializeField] private Canvas _canvas;
+        [SerializeField] private Button _openButton;
+        [SerializeField] private Button _closeButton;
         [SerializeField] private LevelsData _levelsData;
         [SerializeField] private Transform _container;
         [SerializeField] private LevelButtonUI _levelButtonUI;
-        [SerializeField] private Button _nextLevelButton;
+        [Space]
+        [SerializeField] private List<GameObject> _objectsToHideOnOpen;
 
         private PlayerData _playerData;
         private List<LevelButtonUI> _levelButtonUIList;
@@ -33,42 +32,49 @@ namespace UI
         {
             CleanUp();
             Initialize();
-            LevelButtonUI.LevelButtonClicked += OnLevelButtonClicked;
-            LevelButtonUI.LoadLevelEvent += HideUI;
-            _nextLevelButton.onClick.AddListener(OnNextLevelButtonClicked);
-        }
 
+            LevelButtonUI.LevelButtonClicked += OnLevelButtonClicked;
+            LevelButtonUI.LoadLevelEvent += OnLoadedLevel;
+            _openButton.onClick.AddListener(OnOpenClicked);
+            _closeButton.onClick.AddListener(OnCloseClicked);
+        }
         private void OnDestroy()
         {
-            LevelButtonUI.LoadLevelEvent -= HideUI;
-            _nextLevelButton.onClick.RemoveListener(OnNextLevelButtonClicked);
+            LevelButtonUI.LevelButtonClicked -= OnLevelButtonClicked;
+            LevelButtonUI.LoadLevelEvent -= OnLoadedLevel;
+            _openButton.onClick.RemoveListener(OnOpenClicked);
+            _closeButton.onClick.RemoveListener(OnCloseClicked);
         }
 
-        public void ShowUI()
+        public override void ShowUI()
         {
-            _canvas.gameObject.SetActive(true);
+            BallMoveController.IsInputAllowed = false;
+            base.ShowUI();
+            ToggleHidable(false);
         }
 
-        public void HideUI()
+        public override void HideUI()
         {
-            _canvas.gameObject.SetActive(false);
+            BallMoveController.IsInputAllowed = true;
+            base.HideUI();
+            ToggleHidable(true);
         }
 
-        private async void OnNextLevelButtonClicked()
-        {
-            var nextLevelNumber = _currentSelectedButton.LevelNumber + 1;
-            var nextLevelButton = _levelButtonUIList.FirstOrDefault(l => nextLevelNumber == l.LevelNumber);
-            SelectLevelButton(nextLevelButton);
-            await Task.Delay(500);
-            NextLevelButtonClicked?.Invoke();
-        }
+        private void OnOpenClicked() => 
+            ShowUI();
 
-        public void ToggleNextButton(bool enable) =>
-            _nextLevelButton.gameObject.SetActive(enable);
-
-        private void HideUI(uint levelNumber)
-        {
+        private void OnCloseClicked() => 
             HideUI();
+
+        private void OnLoadedLevel(uint levelNumber) => 
+            HideUI();
+
+        private void ToggleHidable(bool enable)
+        {
+            foreach (var obj in _objectsToHideOnOpen)
+            {
+                obj.SetActive(enable);
+            }
         }
 
         private void CleanUp()
@@ -98,7 +104,6 @@ namespace UI
                 }
                 _levelButtonUIList.Add(levelButton);
             }
-            ToggleNextButton(true);
         }
 
         public void UpdateUI(PlayerData playerData)
@@ -108,7 +113,9 @@ namespace UI
                 var isLevelOpened = playerData.OpenedLevels.Contains(levelButton.LevelNumber);
                 levelButton.UpdateLock(isLevelOpened);
             }
-            ToggleNextButton(true);
+
+            var nextLevelButton = _levelButtonUIList.FirstOrDefault(l => playerData.CurrentLevelNumber == l.LevelNumber);
+            SelectLevelButton(nextLevelButton);
         }
 
         private void OnLevelButtonClicked(LevelButtonUI levelButton)

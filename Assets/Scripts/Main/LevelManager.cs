@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 using System;
 
 public class LevelManager : MonoBehaviour
@@ -65,7 +64,6 @@ public class LevelManager : MonoBehaviour
                 else
                 {
                     var color = RoundColor(pixelColor);
-                    Debug.Log(color);
                     if (color == _colorStart)
                     {
                         SpawnRoadTile(spawnPos, color);
