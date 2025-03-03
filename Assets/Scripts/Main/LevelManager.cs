@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour
 
     [Header("Tiles Prefabs")]
     [SerializeField] private GameObject _prefabWallTile;
-    [SerializeField] private GameObject _prefabRoadTile;
+    [SerializeField] private RoadTile _prefabRoadTile;
 
     public Color PaintColor { get; private set; }
     public List<RoadTile> RoadTilesList { get; private set; }
@@ -21,6 +21,7 @@ public class LevelManager : MonoBehaviour
 
     private Color _colorWall = Color.white;
     private Color _colorRoad = Color.black;
+    private Color _colorStart = Color.gray;
 
     private float _unitPerPixel;
     private Texture2D _levelTexture;
@@ -54,13 +55,29 @@ public class LevelManager : MonoBehaviour
                 var pixelColor = _levelTexture.GetPixel(x, y);
                 var spawnPos = (new Vector3(x, 0f, y) * _unitPerPixel) - offset;
                 if (pixelColor == _colorWall)
-                    Spawn(_prefabWallTile, spawnPos);
+                {
+                    SpawnWall(_prefabWallTile, spawnPos);
+                }
                 else if (pixelColor == _colorRoad)
-                    Spawn(_prefabRoadTile, spawnPos);
+                {
+                    SpawnRoadTile(spawnPos, pixelColor);
+                }
+                else
+                {
+                    var color = RoundColor(pixelColor);
+                    Debug.Log(color);
+                    if (color == _colorStart)
+                    {
+                        SpawnRoadTile(spawnPos, color);
+                    }
+                }
             }
         }
 
-        DefaultBallRoadTile = RoadTilesList[0];
+        if (DefaultBallRoadTile == null)
+        {
+            DefaultBallRoadTile = RoadTilesList[0];
+        }
     }
 
     private void ClearMap()
@@ -71,12 +88,34 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void Spawn(GameObject prefabTile, Vector3 position)
+    private void SpawnWall(GameObject prefabTile, Vector3 position)
     {
         position.y = prefabTile.transform.position.y;
 
-        var obj = Instantiate(prefabTile, position, Quaternion.identity, _map);
-        if (prefabTile == _prefabRoadTile)
-            RoadTilesList.Add(obj.GetComponent<RoadTile>());
+        var wallTile = Instantiate(prefabTile, position, Quaternion.identity, _map);
+        wallTile.GetComponent<Renderer>().material.color = CurrentLevelData.WallColor;
+    }
+
+    private void SpawnRoadTile(Vector3 position, Color color)
+    {
+        position.y = _prefabRoadTile.transform.position.y;
+
+        var roadTile = Instantiate(_prefabRoadTile, position, Quaternion.identity, _map);
+        RoadTilesList.Add(roadTile);
+        if (color == _colorStart)
+        {
+            DefaultBallRoadTile = roadTile;
+        }
+    }
+
+    public static Color RoundColor(Color color, int decimalPlaces = 2)
+    {
+        float factor = Mathf.Pow(10, decimalPlaces);
+        float r = Mathf.Round(color.r * factor) / factor;
+        float g = Mathf.Round(color.g * factor) / factor;
+        float b = Mathf.Round(color.b * factor) / factor;
+        float a = Mathf.Round(color.a * factor) / factor;
+
+        return new Color(r, g, b, a);
     }
 }

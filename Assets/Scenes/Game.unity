@@ -632,7 +632,7 @@ MonoBehaviour:
   _plane: {fileID: 550312013}
   _map: {fileID: 951864811}
   _prefabWallTile: {fileID: 4638526012646592417, guid: b8781b30888f7d545a5c7d18ff4c8fdd, type: 3}
-  _prefabRoadTile: {fileID: 1170526689672148674, guid: 97d31dd7215d88b4e94e79811f391283, type: 3}
+  _prefabRoadTile: {fileID: 9013975806612259816, guid: 97d31dd7215d88b4e94e79811f391283, type: 3}
 --- !u!1 &684496341
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,7 +893,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
