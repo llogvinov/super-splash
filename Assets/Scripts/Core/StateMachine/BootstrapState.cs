@@ -1,5 +1,7 @@
 using Core.Services;
 using Core.Services.PlayerData;
+using UnityEngine;
+using YG;
 
 namespace Core.StateMachine
 {
@@ -9,31 +11,39 @@ namespace Core.StateMachine
         private readonly SceneLoader _sceneLoader;
         private readonly AllServices _services;
 
-        public BootstrapState(GameStateMachine stateMachine, 
-            SceneLoader sceneLoader, 
+        public BootstrapState(GameStateMachine stateMachine,
+            SceneLoader sceneLoader,
             AllServices services)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
             _services = services;
-            
+
             RegisterServices();
         }
-        
+
         public void Enter()
         {
-            _sceneLoader.LoadScene("Game", onLoaded: () => 
+            ResetProgress();
+            _sceneLoader.LoadScene("Game", onLoaded: () =>
                 _stateMachine.Enter<PrepareGameState>());
         }
 
+        private static void ResetProgress() => 
+            YG2.SetDefaultSaves();
+
         public void Exit()
         {
-            
+
         }
 
         private void RegisterServices()
         {
+#if UNITY_EDITOR
             _services.RegisterSingle<IPlayerDataService>(new LocalPlayerDataService());
+#else
+            _services.RegisterSingle<IPlayerDataService>(new YandexPlayerDataService());
+#endif
         }
     }
 }

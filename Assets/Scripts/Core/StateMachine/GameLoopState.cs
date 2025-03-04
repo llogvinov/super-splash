@@ -2,6 +2,7 @@ using Core.Services;
 using Core.Services.PlayerData;
 using UI;
 using UnityEngine;
+using YG;
 
 namespace Core.StateMachine
 {
@@ -33,10 +34,13 @@ namespace Core.StateMachine
 
             Game.LevelCompleted += OnLevelCompleted;
             LevelButtonUI.LoadLevelEvent += LoadLevel;
+            
+            YG2.GameplayStart();
         }
 
         private void OnLevelCompleted()
         {
+            YG2.InterstitialAdvShow();
             if (_playerData.CurrentLevelNumber == _levelsData.MaxLevel)
             {
                 LevelCompletedUI.ToggleNextButton(false);

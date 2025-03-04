@@ -8,3 +8,12 @@ namespace Core.Services.PlayerData
         public List<uint> OpenedLevels;
     }
 }
+
+namespace YG
+{
+    public partial class SavesYG
+    {
+        public uint CurrentLevelNumber = 0;
+        public List<uint> OpenedLevels = new List<uint>() { 1 };
+    }
+}
