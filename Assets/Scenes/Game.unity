@@ -2989,6 +2989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e57b4a7a5e1d0f458e8f13c0784a2aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvas: {fileID: 547737741}
   _skipLevelButton: {fileID: 105574141}
   _hintText: {fileID: 1139721433}
   _confirmationPanel: {fileID: 1371352026}

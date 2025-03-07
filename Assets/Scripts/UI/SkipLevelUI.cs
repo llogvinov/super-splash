@@ -5,7 +5,7 @@ using YG;
 
 namespace UI
 {
-    public class SkipLevelUI : MonoBehaviour
+    public class SkipLevelUI : BaseUI
     {
         public Action AdShown;
         
