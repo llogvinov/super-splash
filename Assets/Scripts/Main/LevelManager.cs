@@ -22,8 +22,18 @@ public class LevelManager : MonoBehaviour
     private Color _colorRoad = Color.black;
     private Color _colorStart = Color.gray;
 
+    private const float SMALL_LEVEL_CAMERA_SIZE = 3.5f;
+    private const float MEDIUM_LEVEL_CAMERA_SIZE = 4.5f;
+    private const float BIG_LEVEL_CAMERA_SIZE = 5.5f;
+
     private float _unitPerPixel;
     private Texture2D _levelTexture;
+    private Camera _camera;
+
+    private void Awake()
+    {
+        _camera = Camera.main;
+    }
 
     public void Initialize(LevelData levelData)
     {
@@ -43,7 +53,6 @@ public class LevelManager : MonoBehaviour
         var width = _levelTexture.width;
         var height = _levelTexture.height;
         _plane.localScale = new Vector3(width * _unitPerPixel / 10f, 1, height * _unitPerPixel / 10f);
-
         var offset = (new Vector3(width / 2f, 0f, height / 2f) * _unitPerPixel)
            - new Vector3(halfUnitPerPixel, 0f, halfUnitPerPixel);
 
@@ -70,6 +79,19 @@ public class LevelManager : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if (_levelTexture.height > 26f)
+        {
+            UpdateCamera(BIG_LEVEL_CAMERA_SIZE);
+        }
+        else if (_levelTexture.height > 17f)
+        {
+            UpdateCamera(MEDIUM_LEVEL_CAMERA_SIZE);
+        }
+        else
+        {
+            UpdateCamera(SMALL_LEVEL_CAMERA_SIZE);
         }
 
         if (DefaultBallRoadTile == null)
@@ -116,4 +138,7 @@ public class LevelManager : MonoBehaviour
 
         return new Color(r, g, b, a);
     }
+
+    private void UpdateCamera(float cameraSize) => 
+        _camera.orthographicSize = cameraSize;
 }
