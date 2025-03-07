@@ -13,11 +13,15 @@ namespace Core.StateMachine
         private readonly LevelsData _levelsData;
         private IPlayerDataService _playerDataService;
         private PlayerData _playerData;
-        private LevelSelectUI _levelSelectUI;
-        private LevelCompletedUI _levelCompletedUI;
 
+        private LevelSelectUI _levelSelectUI;
         private LevelSelectUI LevelSelectUI => _levelSelectUI ??= GameObject.FindObjectOfType<LevelSelectUI>();
+
+        private LevelCompletedUI _levelCompletedUI;
         private LevelCompletedUI LevelCompletedUI => _levelCompletedUI ??= GameObject.FindObjectOfType<LevelCompletedUI>();
+
+        private SkipLevelUI _skipLevelUI;
+        private SkipLevelUI SkipLevelUI => _skipLevelUI ??= GameObject.FindObjectOfType<SkipLevelUI>();
 
         public GameLoopState(GameStateMachine stateMachine,
             AllServices services)
@@ -34,8 +38,17 @@ namespace Core.StateMachine
 
             Game.LevelCompleted += OnLevelCompleted;
             LevelButtonUI.LoadLevelEvent += LoadLevel;
-            
+            SkipLevelUI.AdShown += SkipLevel;
+
             YG2.GameplayStart();
+        }
+
+        private void GoToNextLevel(uint nextLevel)
+        {
+            _playerData.CurrentLevelNumber = nextLevel;
+            _playerDataService.Save(_playerData);
+            LevelSelectUI.UpdateUI(_playerData);
+            _stateMachine.Enter<PrepareGameState>();
         }
 
         private void OnLevelCompleted()
@@ -59,10 +72,18 @@ namespace Core.StateMachine
 
         private void LoadLevel(uint levelNumber)
         {
-            _playerData.CurrentLevelNumber = levelNumber;
+            GoToNextLevel(levelNumber);
+        }
+
+        private void SkipLevel()
+        {
+            var nextLevel = _playerData.CurrentLevelNumber + 1;
+            if (!_playerData.OpenedLevels.Contains(nextLevel))
+            {
+                _playerData.OpenedLevels.Add(nextLevel);
+            }
             _playerDataService.Save(_playerData);
-            LevelSelectUI.UpdateUI(_playerData);
-            _stateMachine.Enter<PrepareGameState>();
+            GoToNextLevel(nextLevel);
         }
 
         private void OnNextLevelButtonClicked()
@@ -70,11 +91,9 @@ namespace Core.StateMachine
             LevelCompletedUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
             LevelCompletedUI.HideUI();
             LevelSelectUI.HideUI();
-
-            _playerData.CurrentLevelNumber += 1;
-            _playerDataService.Save(_playerData);
-            LevelSelectUI.UpdateUI(_playerData);
-            _stateMachine.Enter<PrepareGameState>();
+            
+            var nextLevel = _playerData.CurrentLevelNumber + 1;
+            GoToNextLevel(nextLevel);
         }
 
         public void Exit()
@@ -82,6 +101,7 @@ namespace Core.StateMachine
             Game.LevelCompleted -= OnLevelCompleted;
             LevelButtonUI.LoadLevelEvent -= LoadLevel;
             LevelCompletedUI.NextLevelButtonClicked -= OnNextLevelButtonClicked;
+            SkipLevelUI.AdShown -= SkipLevel;
         }
     }
 }

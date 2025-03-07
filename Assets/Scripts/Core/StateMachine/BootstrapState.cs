@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using Core.Services;
+using Core.Services.Ad;
 using Core.Services.PlayerData;
-using UnityEngine;
-using YG;
 
 namespace Core.StateMachine
 {
@@ -47,10 +45,23 @@ namespace Core.StateMachine
 
         private void RegisterServices()
         {
+            RegisterPlayerDataService();
+            RegisterAdService();
+        }
+
+        private void RegisterPlayerDataService()
+        {
 #if UNITY_EDITOR
             _services.RegisterSingle<IPlayerDataService>(new LocalPlayerDataService());
 #else
             _services.RegisterSingle<IPlayerDataService>(new YandexPlayerDataService());
+#endif
+        }
+
+        private void RegisterAdService()
+        {
+#if UNITY_WEBGL
+            _services.RegisterSingle<IAdService>(new YandexAdService());
 #endif
         }
     }
