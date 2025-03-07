@@ -91,9 +91,8 @@ namespace UI
         public void ToggleNextButton(bool enable) =>
             _nextLevelButton.gameObject.SetActive(enable);
 
-        private async void OnNextLevelButtonClicked()
+        private void OnNextLevelButtonClicked()
         {
-            await Task.Delay(500);
             NextLevelButtonClicked?.Invoke();
         }
     }

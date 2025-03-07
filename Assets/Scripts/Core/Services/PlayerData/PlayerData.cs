@@ -13,7 +13,7 @@ namespace YG
 {
     public partial class SavesYG
     {
-        public uint CurrentLevelNumber = 0;
+        public uint CurrentLevelNumber = 1;
         public List<uint> OpenedLevels = new List<uint>() { 1 };
     }
 }

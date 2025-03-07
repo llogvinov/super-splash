@@ -31,11 +31,9 @@ namespace UI
             _button.interactable = isLevelOpened;
         }
 
-        private async void OnButtonClicked()
+        private void OnButtonClicked()
         {
             LevelButtonClicked?.Invoke(this);
-            // if level is open
-            await Task.Delay(500);
             LoadLevel();
         }
 

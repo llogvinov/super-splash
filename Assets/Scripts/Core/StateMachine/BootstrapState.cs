@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Core.Services;
 using Core.Services.PlayerData;
 using UnityEngine;
@@ -29,8 +30,15 @@ namespace Core.StateMachine
                 _stateMachine.Enter<PrepareGameState>());
         }
 
-        private static void ResetProgress() => 
-            YG2.SetDefaultSaves();
+        private void ResetProgress()
+        {
+            // YG2.SetDefaultSaves();
+            // YG2.SaveProgress();
+            // var playerData = new PlayerData();
+            // playerData.CurrentLevelNumber = 1;
+            // playerData.OpenedLevels =  new List<uint>() { 1 };
+            // _services.Single<IPlayerDataService>().Save(playerData);
+        }
 
         public void Exit()
         {
