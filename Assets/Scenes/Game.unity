@@ -1565,7 +1565,7 @@ GameObject:
   - component: {fileID: 596019022}
   - component: {fileID: 596019024}
   m_Layer: 0
-  m_Name: Level
+  m_Name: Level Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1600,6 +1600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d727b32bc5dfdd243a7a18c370a816c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _backgroundData: {fileID: 11400000, guid: 24e9a140121e70d429941d6eac36aa1c, type: 2}
   _plane: {fileID: 550312013}
   _map: {fileID: 951864811}
   _prefabWallTile: {fileID: 4638526012646592417, guid: b8781b30888f7d545a5c7d18ff4c8fdd, type: 3}

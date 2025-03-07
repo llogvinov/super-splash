@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Main;
 
 public class LevelManager : MonoBehaviour
 {
     public static Action Initialized;
 
+    [SerializeField] private LevelsBackgroundData _backgroundData;
     [SerializeField] private Transform _plane;
     [SerializeField] private Transform _map;
 
@@ -81,18 +83,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        if (_levelTexture.height > 26f)
-        {
-            UpdateCamera(BIG_LEVEL_CAMERA_SIZE);
-        }
-        else if (_levelTexture.height > 17f)
-        {
-            UpdateCamera(MEDIUM_LEVEL_CAMERA_SIZE);
-        }
-        else
-        {
-            UpdateCamera(SMALL_LEVEL_CAMERA_SIZE);
-        }
+        UpdateCamera();
 
         if (DefaultBallRoadTile == null)
         {
@@ -139,6 +130,26 @@ public class LevelManager : MonoBehaviour
         return new Color(r, g, b, a);
     }
 
-    private void UpdateCamera(float cameraSize) => 
+    private void UpdateCamera()
+    {
+        UpdateCameraBackground(_backgroundData.BackgroundColors[(int)CurrentLevelData.LevelNumber / 11]);
+        if (_levelTexture.height > 26f)
+        {
+            UpdateCameraSize(BIG_LEVEL_CAMERA_SIZE);
+        }
+        else if (_levelTexture.height > 17f)
+        {
+            UpdateCameraSize(MEDIUM_LEVEL_CAMERA_SIZE);
+        }
+        else
+        {
+            UpdateCameraSize(SMALL_LEVEL_CAMERA_SIZE);
+        }
+    }
+
+    private void UpdateCameraSize(float cameraSize) => 
         _camera.orthographicSize = cameraSize;
+
+    private void UpdateCameraBackground(Color color) =>
+        _camera.backgroundColor = color;
 }
