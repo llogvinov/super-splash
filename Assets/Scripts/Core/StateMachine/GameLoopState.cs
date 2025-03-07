@@ -15,13 +15,20 @@ namespace Core.StateMachine
         private PlayerData _playerData;
 
         private LevelSelectUI _levelSelectUI;
-        private LevelSelectUI LevelSelectUI => _levelSelectUI ??= GameObject.FindObjectOfType<LevelSelectUI>();
+        private LevelSelectUI LevelSelectUI => 
+            _levelSelectUI ??= GameObject.FindObjectOfType<LevelSelectUI>();
 
         private LevelCompletedUI _levelCompletedUI;
-        private LevelCompletedUI LevelCompletedUI => _levelCompletedUI ??= GameObject.FindObjectOfType<LevelCompletedUI>();
+        private LevelCompletedUI LevelCompletedUI => 
+            _levelCompletedUI ??= GameObject.FindObjectOfType<LevelCompletedUI>();
+
+        private LastLevelCompletedUI _lastLevelCompletedUI;
+        private LastLevelCompletedUI LastLevelCompletedUI => 
+            _lastLevelCompletedUI ??= GameObject.FindObjectOfType<LastLevelCompletedUI>();
 
         private SkipLevelUI _skipLevelUI;
-        private SkipLevelUI SkipLevelUI => _skipLevelUI ??= GameObject.FindObjectOfType<SkipLevelUI>();
+        private SkipLevelUI SkipLevelUI => 
+            _skipLevelUI ??= GameObject.FindObjectOfType<SkipLevelUI>();
 
         public GameLoopState(GameStateMachine stateMachine,
             AllServices services)
@@ -56,9 +63,9 @@ namespace Core.StateMachine
             YG2.InterstitialAdvShow();
             if (_playerData.CurrentLevelNumber == _levelsData.MaxLevel)
             {
-                LevelCompletedUI.ToggleNextButton(false);
+                LastLevelCompletedUI.ShowUI();
+                return;
             }
-            LevelCompletedUI.ShowUI();
 
             var nextLevel = _playerData.CurrentLevelNumber + 1;
             if (!_playerData.OpenedLevels.Contains(nextLevel))
@@ -66,8 +73,9 @@ namespace Core.StateMachine
                 _playerData.OpenedLevels.Add(nextLevel);
             }
             _playerDataService.Save(_playerData);
-
+            
             LevelCompletedUI.NextLevelButtonClicked += OnNextLevelButtonClicked;
+            LevelCompletedUI.ShowUI();
         }
 
         private void LoadLevel(uint levelNumber)
@@ -77,6 +85,12 @@ namespace Core.StateMachine
 
         private void SkipLevel()
         {
+            if (_playerData.CurrentLevelNumber == _levelsData.MaxLevel)
+            {
+                LastLevelCompletedUI.ShowUI();
+                return;
+            }
+            
             var nextLevel = _playerData.CurrentLevelNumber + 1;
             if (!_playerData.OpenedLevels.Contains(nextLevel))
             {
