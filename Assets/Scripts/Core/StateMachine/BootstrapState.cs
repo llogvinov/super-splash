@@ -9,33 +9,24 @@ namespace Core.StateMachine
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly AllServices _services;
+        private readonly ICoroutineRunner _coroutineRunner;
 
         public BootstrapState(GameStateMachine stateMachine,
             SceneLoader sceneLoader,
-            AllServices services)
+            AllServices services,
+            ICoroutineRunner coroutineRunner)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
             _services = services;
-
+            _coroutineRunner = coroutineRunner;
             RegisterServices();
         }
 
         public void Enter()
         {
-            ResetProgress();
             _sceneLoader.LoadScene("Game", onLoaded: () =>
                 _stateMachine.Enter<PrepareGameState>());
-        }
-
-        private void ResetProgress()
-        {
-            // YG2.SetDefaultSaves();
-            // YG2.SaveProgress();
-            // var playerData = new PlayerData();
-            // playerData.CurrentLevelNumber = 1;
-            // playerData.OpenedLevels =  new List<uint>() { 1 };
-            // _services.Single<IPlayerDataService>().Save(playerData);
         }
 
         public void Exit()

@@ -16,7 +16,8 @@ namespace Core
         {
             _stateMachine = new GameStateMachine(this,
                 new SceneLoader(coroutineRunner),
-                AllServices.Container);
+                AllServices.Container,
+                coroutineRunner);
         }
 
     }
