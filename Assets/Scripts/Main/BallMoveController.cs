@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -27,11 +28,18 @@ namespace Main
 
         private void Start()
         {
+            LevelManager.OnBeforeInitialized += OnBeforeInitialized;
             LevelManager.Initialized += OnInitialized;
+        }
+
+        private void OnBeforeInitialized()
+        {
+            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
+            LevelManager.OnBeforeInitialized -= OnBeforeInitialized;
             LevelManager.Initialized -= OnInitialized;
         }
 
@@ -40,6 +48,8 @@ namespace Main
             transform.position = levelManager.DefaultBallRoadTile.position;
             transform.position = new Vector3(transform.position.x, transform.lossyScale.y / 2f +
                levelManager.DefaultBallRoadTile.transform.lossyScale.y / 2f, transform.position.z);
+
+            gameObject.SetActive(true);
             canMove = true;
 
             playerInput.InputDone += OnInputDone;

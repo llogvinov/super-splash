@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core;
 using Core.Services;
 using Core.Services.PlayerData;
 using Main;
@@ -33,13 +35,17 @@ namespace UI
             CleanUp();
             Initialize();
 
+            Game.LevelCompleted += OnLevelCompleted;
+            LevelManager.Initialized += OnInitialized;
             LevelButtonUI.LevelButtonClicked += OnLevelButtonClicked;
             LevelButtonUI.LoadLevelEvent += OnLoadedLevel;
             _openButton.onClick.AddListener(OnOpenClicked);
             _closeButton.onClick.AddListener(OnCloseClicked);
         }
+
         private void OnDestroy()
         {
+            LevelManager.Initialized -= OnInitialized;
             LevelButtonUI.LevelButtonClicked -= OnLevelButtonClicked;
             LevelButtonUI.LoadLevelEvent -= OnLoadedLevel;
             _openButton.onClick.RemoveListener(OnOpenClicked);
@@ -120,6 +126,7 @@ namespace UI
 
         private void OnLevelButtonClicked(LevelButtonUI levelButton)
         {
+            ToggleOpenButton(false);
             SelectLevelButton(levelButton);
         }
 
@@ -129,5 +136,14 @@ namespace UI
             _currentSelectedButton = levelButton;
             _currentSelectedButton.ToggleOutline(true);
         }
+
+        private void OnInitialized() => 
+            ToggleOpenButton(true);
+
+        private void OnLevelCompleted() =>
+            ToggleOpenButton(false);
+    
+        private void ToggleOpenButton(bool enable) =>
+            _openButton.interactable = enable;
     }
 }
