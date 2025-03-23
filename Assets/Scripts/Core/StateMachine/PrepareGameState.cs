@@ -1,5 +1,6 @@
 using System.Linq;
 using Core.Services;
+using Core.Services.Ad;
 using Core.Services.PlayerData;
 using UI;
 using UnityEngine;
@@ -32,6 +33,7 @@ namespace Core.StateMachine
 
         public void Enter()
         {
+            AllServices.Container.Single<IAdService>().ShowInterstitialAd();
             _playerData = _services.Single<IPlayerDataService>().Load();
             Debug.Log(_playerData.CurrentLevelNumber);
 

@@ -60,7 +60,6 @@ namespace Core.StateMachine
 
         private void OnLevelCompleted()
         {
-            YG2.InterstitialAdvShow();
             if (_playerData.CurrentLevelNumber == _levelsData.MaxLevel)
             {
                 LastLevelCompletedUI.ShowUI();
